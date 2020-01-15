@@ -2,6 +2,7 @@ const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
 const pdf = require("html-pdf");
+// var conversion = require("phantom-html-to-pdf")();
 
 const questions = [
     {
@@ -22,16 +23,31 @@ const questions = [
     }
 ];
 
+
 inquirer
     .prompt(questions)
     .then(function ({username, color}) {
         const queryUrl = `https://api.github.com/users/${username}`;
-        console.log(username, color);
+        console.log(color);
         axios
             .get(queryUrl)
             .then(function (response) {
                 const {avatar_url, login, location, html_url, blog, bio, public_repos, followers, following} = response.data;
-            })
+                const html = 
+                    `<h1>${login}</h1>
+                    <img src="${avatar_url}">
+                    <a href="${html_url}">GitHub</a>
+                    <p>${location}</p>
+                    <p>${color}</p>`
+                ;
+                var options = { format: 'Letter'};
+
+                pdf.create(html, options).toFile(`./pdfs/${login}.pdf`, function(err, res) {
+                    if (err) return console.log(err);
+                    console.log(res);
+                });
+
+            });
     });
 
 
