@@ -1,9 +1,8 @@
-const fs = require("fs")
 const axios = require("axios");
 const inquirer = require("inquirer");
 const pdf = require("html-pdf");
 
-
+// inquirer questions
 const questions = [
     {
         type: "input"
@@ -23,11 +22,12 @@ const questions = [
     }
 ];
 
-
+// inquirer package used to ask the user question in cli
 inquirer
     .prompt(questions)
     .then(function ({username, color}) {
         const queryUrl = `https://api.github.com/users/${username}`;
+        // color array used when user answers inquirer questions
         const colors = {
             green: {
                 wrapperBackground: "#E6E1C3",
@@ -55,11 +55,16 @@ inquirer
             }
         };
 
+        // api call made against github api
         axios
             .get(queryUrl)
-            .then(function (response) {
-                const {avatar_url, login, location, html_url, name, company, blog, bio, public_repos, followers, following} = response.data;
-                // console.log(response.data);
+            .then(function ({data}) {
+
+                // setting variables from axios call
+                const { avatar_url, login, location, html_url, name, company, blog, bio, public_repos, public_gists, followers, following} = data;
+                console.log(data);
+
+                // massive html template literal to use for generating pdf
                 const html = 
                     `<!DOCTYPE html>
                     <html lang="en">
@@ -103,7 +108,7 @@ inquirer
                                 -webkit-print-color-adjust: exact !important;
                                 font-family: 'Cabin', sans-serif;
                             }
-                            main {
+                            .main {
                                 background-color: #e9edee !important;
                                 height: auto;
                                 padding-top: 30px;
@@ -162,28 +167,11 @@ inquirer
                             .photo-header h1 {
                                 margin-top: 10px;
                             }
-                            .links-nav {
-                                width: 100%;
-                                text-align: center;
-                                padding: 20px 0;
-                                font-size: 1.1em;
-                            }
-                            .nav-link {
-                                display: inline-block;
-                                margin: 5px 10px;
-                            }
-                            .workExp-date {
-                                font-style: italic;
-                                font-size: .7em;
-                                text-align: right;
-                                margin-top: 10px;
-                            }
                             .container {
                                 padding: 50px;
                                 padding-left: 100px;
                                 padding-right: 100px;
                             }
-
                             .card {
                                 padding: 30px;
                                 border-radius: 6px;
@@ -192,13 +180,11 @@ inquirer
                                 margin: 40px;
                                 text-align: center;
                             }
-                            
                             a, a:hover {
                                 text-decoration: none !important;
                                 color: inherit;
                                 font-weight: bold;
                             }
-
                             @media print { 
                                 body { 
                                     zoom: .75; 
@@ -218,7 +204,7 @@ inquirer
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col text-right">
-                                            <a><i class="fas fa-location-arrow"></i>${location}</a>
+                                            <a href="http://maps.google.com/maps?q=${location.split(' ').join('+')}"><i class="fas fa-location-arrow"></i>${location}</a>
                                         </div>
                                         <div class="col text-center">
                                             <a href="${html_url}"><i class="fab fa-github"></i> GitHub</a>
@@ -229,7 +215,7 @@ inquirer
                                     </div>
                                 </div>
                             </div>
-                            <div class="main mt-5 pt-3 px-3">
+                            <div class="main pt-5 pb-1 px-3 mb-0">
                                 <div>
                                     <h4 style="text-align: center;">${bio}</h4>
                                 </div>
@@ -251,7 +237,7 @@ inquirer
                                     <div class="col-6">
                                         <div class="card m-0">
                                             <h4 class="mb-2">GitHub Stars</h4>
-                                            <h6>***</h6>
+                                            <h6>${public_gists}</h6>
                                         </div>
                                     </div>    
                                     <div class="col-6">
@@ -268,27 +254,16 @@ inquirer
                     </body>
                     </html>`
                 ;
+
+                // set options for pdf type
                 var options = { format: 'Letter'};
 
+                // generate pdf document from html template and options. Also sets file location
                 pdf.create(html, options).toFile(`./pdfs/${login}.pdf`, function(err, res) {
                     if (err) return console.log(err);
+                    console.log('Github snapshot successfully created!');
                     console.log(res);
                 });
 
             });
     });
-
-
-
-// data needed for app
-    // - Profile image                          avatar_url
-    // - User name                              login
-    // - Links to the following:
-    //     - User location via Google Maps      location
-    //     - User GitHub profile                html_url
-    //     - User blog                          blog
-    // - User bio                               bio
-    // - Number of public repositories          public_repos
-    // - Number of followers                    followers
-    // - Number of GitHub stars                 
-    // - Number of users following              following
