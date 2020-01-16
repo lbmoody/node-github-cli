@@ -62,7 +62,7 @@ inquirer
 
                 // setting variables from axios call
                 const { avatar_url, login, location, html_url, name, company, blog, bio, public_repos, public_gists, followers, following} = data;
-                console.log(data);
+                // console.log(data);
 
                 // massive html template literal to use for generating pdf
                 const html = 
