@@ -1,8 +1,8 @@
-const fs = require("fs");
+const fs = require("fs")
 const axios = require("axios");
 const inquirer = require("inquirer");
 const pdf = require("html-pdf");
-// var conversion = require("phantom-html-to-pdf")();
+
 
 const questions = [
     {
@@ -69,13 +69,15 @@ inquirer
                         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
                         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
                         <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
+                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
                         <title>Document</title>
                         <style>
                             @page {
                                 margin: 0;
                             }
                             *,
-                            *::after, *::before {
+                            *::after,
+                            *::before {
                                 box-sizing: border-box;
                             }
                             html, body {
@@ -89,13 +91,20 @@ inquirer
                                 background-color: ${colors[color].wrapperBackground};
                                 padding-top: 100px;
                             }
+
+                            .bottom {
+                                background-color: ${colors[color].wrapperBackground};
+                                padding-top: 200px;
+                                height: auto;
+                            }
+
                             body {
                                 background-color: white;
                                 -webkit-print-color-adjust: exact !important;
                                 font-family: 'Cabin', sans-serif;
                             }
                             main {
-                                background-color: #E9EDEE;
+                                background-color: #e9edee !important;
                                 height: auto;
                                 padding-top: 30px;
                             }
@@ -142,6 +151,9 @@ inquirer
                                 margin-top: -75px;
                                 border: 6px solid ${colors[color].photoBorderColor};
                                 box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
                             }
                             .photo-header h1, .photo-header h2 {
                                 width: 100%;
@@ -172,29 +184,17 @@ inquirer
                                 padding-right: 100px;
                             }
 
-                            .row {
-                                display: flex;
-                                flex-wrap: wrap;
-                                justify-content: space-between;
-                                margin-top: 20px;
-                                margin-bottom: 20px;
-                            }
-
                             .card {
-                                padding: 20px;
+                                padding: 30px;
                                 border-radius: 6px;
                                 background-color: ${colors[color].headerBackground};
                                 color: ${colors[color].headerColor};
-                                margin: 20px;
-                            }
-                            
-                            .col {
-                                flex: 1;
+                                margin: 40px;
                                 text-align: center;
                             }
-
+                            
                             a, a:hover {
-                                text-decoration: none;
+                                text-decoration: none !important;
                                 color: inherit;
                                 font-weight: bold;
                             }
@@ -208,39 +208,61 @@ inquirer
                     </head>
                     <body>
                         <div class="container">
-                            <div class="photo-header">
-                                <img src="${avatar_url}">
-                                <h1>Hi!</h1>
-                                <h2>My name is ${name}</h2>
-                                <h6>Currently @ ${company}</h6>
-                                <a href="${html_url}">GitHub</a>
-                                <p>${location}</p>
-                                <p>${color}</p>
+                            <div class="wrapper">
+                                <div class="photo-header">
+                                    <img src="${avatar_url}">
+                                    <h1>Hi!</h1>
+                                    <h2>My name is ${name}</h2>
+                                    <div class="my-3 text-center">
+                                        <h6>Currently @ ${company}</h6>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col text-right">
+                                            <a><i class="fas fa-location-arrow"></i>${location}</a>
+                                        </div>
+                                        <div class="col text-center">
+                                            <a href="${html_url}"><i class="fab fa-github"></i> GitHub</a>
+                                        </div>
+                                        <div class="col text-left">
+                                            <a href="${blog}"><i class="fas fa-blog"></i>Blog</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="main">
+                            <div class="main mt-5 pt-3 px-3">
                                 <div>
-                                    ${bio}
+                                    <h4 style="text-align: center;">${bio}</h4>
                                 </div>
-                                <div class="row">
-                                    <div class="card">
-                                        <h3 class="col">Public Respositories</h3>
-                                        <h4 class="col">${public_repos}</h4>
-                                    </div>
-                                    <div class="card">
-                                        <h3 class="col">Followers</h3>
-                                        <h4 class="col">${followers}</h4>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="card">
-                                        <h3 class="col">GitHub Stars</h3>
-                                        <h4 class="col">***</h4>
-                                    </div>
-                                    <div class="card">
-                                        <h3 class="col">Following</h3>
-                                        <h4 class="col">${following}</h4>
+                                <div class="row mt-4">
+                                    <div class="col-6">
+                                        <div class="card m-0">
+                                            <h4 class="mb-2">Public Respositories</h4>
+                                            <h6>${public_repos}</h6>
+                                        </div>
+                                    </div>    
+                                    <div class="col-6">
+                                        <div class="card m-0">
+                                            <h4 class="mb-2">Followers</h4>
+                                            <h6>${followers}</h6>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="row mt-4 mb-5">
+                                    <div class="col-6">
+                                        <div class="card m-0">
+                                            <h4 class="mb-2">GitHub Stars</h4>
+                                            <h6>***</h6>
+                                        </div>
+                                    </div>    
+                                    <div class="col-6">
+                                        <div class="card m-0">
+                                            <h4 class="mb-2">Following</h4>
+                                            <h6>${following}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bottom">
                             </div>
                         </div>
                     </body>
