@@ -59,7 +59,7 @@ inquirer
             .get(queryUrl)
             .then(function (response) {
                 const {avatar_url, login, location, html_url, name, company, blog, bio, public_repos, followers, following} = response.data;
-                console.log(response.data);
+                // console.log(response.data);
                 const html = 
                     `<!DOCTYPE html>
                     <html lang="en">
