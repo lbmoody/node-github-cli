@@ -15,8 +15,5 @@ Then it will prompt the user with a second question which will apply a unique co
 
 After these questions are answered the application will make a call to the github api with the user name entered and create a pdf in the `/pdfs` folder in the repository. A sample of the pdf generated can be viewed in the repo [here](https://github.com/lbmoody/node-github-cli/blob/master/pdfs/lbmoody.pdf).
 
-![app-walkthrough](./gifs/node-github-cli.gif)
-
-
 ## API References
 This project also uses the github api. Documentation for the github api can be found [here](https://developer.github.com/v3/).
